@@ -33,6 +33,8 @@ def get_lidar_make(sensor_name):
         return "Hesai", ".csv"
     elif sensor_name[:3].lower() in ["hdl", "vlp", "vls"]:
         return "Velodyne", ".yaml"
+    elif sensor_name.lower() in ["helios", "bpearl"]:
+        return "Robosense", None
     return "unrecognized_sensor_model"
 
 
@@ -74,15 +76,13 @@ def launch_setup(context, *args, **kwargs):
     nebula_decoders_share_dir = get_package_share_directory("nebula_decoders")
 
     # Calibration file
-    sensor_calib_fp = os.path.join(
-        nebula_decoders_share_dir,
-        "calibration",
-        sensor_make.lower(),
-        sensor_model + sensor_extension,
-    )
-    assert os.path.exists(
-        sensor_calib_fp
-    ), "Sensor calib file under calibration/ was not found: {}".format(sensor_calib_fp)
+    if sensor_extension is not None:  # Velodyne and Hesai
+        sensor_calib_fp = os.path.join(nebula_decoders_share_dir, "calibration", sensor_make.lower(),
+                                       sensor_model + sensor_extension)
+        assert os.path.exists(sensor_calib_fp), "Sensor calib file under calibration/ was not found: {}".format(
+            sensor_calib_fp)
+    else:  # Robosense
+        sensor_calib_fp = ""
 
     nodes = []
 
@@ -118,6 +118,23 @@ def launch_setup(context, *args, **kwargs):
         )
     )
 
+    nodes.append(
+        ComposableNode(
+            package="nebula_ros",
+            plugin=sensor_make + "HwMonitor",
+            name=sensor_make.lower() + "_hw_monitor_node",
+            parameters=[
+                {
+                    **create_parameter_dict(
+                        "sensor_model",
+                        "diag_span",
+                    ),
+                },
+            ],
+            extra_arguments=[{"use_intra_process_comms": LaunchConfiguration("use_intra_process")}],
+        )
+    )
+
     cropbox_parameters = create_parameter_dict("input_frame", "output_frame")
     cropbox_parameters["negative"] = True
 
@@ -125,9 +142,9 @@ def launch_setup(context, *args, **kwargs):
     cropbox_parameters["min_x"] = vehicle_info["min_longitudinal_offset"]
     cropbox_parameters["max_x"] = vehicle_info["max_longitudinal_offset"]
     cropbox_parameters["min_y"] = vehicle_info["min_lateral_offset"]
-    cropbox_parameters["max_y"] = vehicle_info["max_lateral_offset"]
+    cropbox_parameters["max_y"] = vehicle_info["max_lateral_offset"] + 0.2
     cropbox_parameters["min_z"] = vehicle_info["min_height_offset"]
-    cropbox_parameters["max_z"] = vehicle_info["max_height_offset"]
+    cropbox_parameters["max_z"] = vehicle_info["max_height_offset"] + 0.2
 
     nodes.append(
         ComposableNode(
@@ -269,6 +286,7 @@ def generate_launch_description():
     add_launch_arg("sensor_ip", "192.168.1.201", "device ip address")
     add_launch_arg("host_ip", "255.255.255.255", "host ip address")
     add_launch_arg("scan_phase", "0.0")
+    add_launch_arg("return_mode", "dual")
     add_launch_arg("base_frame", "base_link", "base frame id")
     add_launch_arg("min_range", "0.3", "minimum view range for Velodyne sensors")
     add_launch_arg("max_range", "300.0", "maximum view range for Velodyne sensors")
