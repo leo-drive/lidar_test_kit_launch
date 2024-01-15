@@ -10,7 +10,7 @@
     <group>
         <push-ros-namespace namespace="lidar"/>
         <group>
-            <push-ros-namespace namespace="xt_128"/>
+            <push-ros-namespace namespace="qt_128"/>
             <include file="$(find-pkg-share common_sensor_launch)/launch/nebula_node_container.launch.py">
                 <arg name="launch_driver" value="$(var launch_driver)"/>
                 <arg name="vehicle_mirror_param_file" value="$(var vehicle_mirror_param_file)"/>

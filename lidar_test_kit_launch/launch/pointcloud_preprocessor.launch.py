@@ -38,7 +38,7 @@ def launch_setup(context, *args, **kwargs):
         parameters=[
             {
                 "input_topics": [
-                    "/sensing/lidar/xt_128/pointcloud",
+                    "/sensing/lidar/qt_128/pointcloud",
                     "/sensing/lidar/bpearl_v3/pointcloud",
                     "/sensing/lidar/bpearl_v4/pointcloud",
                 ],
