@@ -1,6 +1,6 @@
 <launch>
     <arg name="launch_driver" default="true"/>
-    <arg name="host_ip" default="192.168.1.10"/>
+    <arg name="host_ip" default="192.168.1.102"/>
     <arg name="use_concat_filter" default="true"/>
     <arg name="vehicle_id" default="$(env VEHICLE_ID default)"/>
     <arg name="vehicle_mirror_param_file"/>
@@ -20,12 +20,13 @@
                 <arg name="container_name" value="$(var pointcloud_container_name)"/>
 
                 <arg name="sensor_model" value="PandarQT128"/>
-                <arg name="frame_id" value="hesai_xt128_top"/>
-                <arg name="sensor_ip" value="192.168.1.100"/>
+                <arg name="frame_id" value="hesai_qt128_top"/>
+                <arg name="sensor_ip" value="192.168.1.201"/>
                 <arg name="host_ip" value="$(var host_ip)"/>
-                <arg name="data_port" value="2010"/>
+                <arg name="data_port" value="2368"/>
                 <arg name="gnss_port" value="3010"/>
                 <arg name="scan_phase" value="0.0"/>
+                <arg name="return_mode" value="Dual"/>
                 <arg name="dual_return_distance_threshold" value="0.1"/>
                 <arg name="diag_span" value="1000"/>
             </include>
@@ -43,11 +44,12 @@
 
                 <arg name="sensor_model" value="Bpearl"/>
                 <arg name="frame_id" value="rs_bpearl_v3"/>
-                <arg name="sensor_ip" value="192.168.1.100"/>
+                <arg name="sensor_ip" value="192.168.1.203"/>
                 <arg name="host_ip" value="$(var host_ip)"/>
-                <arg name="data_port" value="2010"/>
-                <arg name="gnss_port" value="3010"/>
+                <arg name="data_port" value="5599"/>
+                <arg name="gnss_port" value="7789"/>
                 <arg name="scan_phase" value="0.0"/>
+                <arg name="return_mode" value="Strongest"/>
                 <arg name="dual_return_distance_threshold" value="0.1"/>
                 <arg name="diag_span" value="1000"/>
             </include>
@@ -65,11 +67,12 @@
 
                 <arg name="sensor_model" value="Bpearl"/>
                 <arg name="frame_id" value="rs_bpearl_v4"/>
-                <arg name="sensor_ip" value="192.168.1.100"/>
+                <arg name="sensor_ip" value="192.168.1.200"/>
                 <arg name="host_ip" value="$(var host_ip)"/>
-                <arg name="data_port" value="2010"/>
-                <arg name="gnss_port" value="3010"/>
+                <arg name="data_port" value="6699"/>
+                <arg name="gnss_port" value="7788"/>
                 <arg name="scan_phase" value="0.0"/>
+                <arg name="return_mode" value="Strongest"/>
                 <arg name="dual_return_distance_threshold" value="0.1"/>
                 <arg name="diag_span" value="1000"/>
             </include>
